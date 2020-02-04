@@ -1,0 +1,43 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: ./docker/app/Dockerfile
+    image: myapp:latest
+    networks: 
+     - mynetwork
+    volumes:
+     - ./application:/var/www/html
+    ports:
+     - 80:80 
+  cache:
+    image: redis:latest
+    networks:
+     - mynetwork
+    volumes:
+     - cachedata:/data
+
+  dbdata:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: homestead
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+    networks:
+     - mynetwork
+    volumes:
+     - dbdata:/var/lib/mysql
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
+  cachedata:
+    driver: local
+
+
